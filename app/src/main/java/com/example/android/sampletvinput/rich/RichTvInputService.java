@@ -48,7 +48,8 @@ import com.example.android.sampletvinput.syncadapter.SyncUtils;
 import com.google.android.exoplayer.ExoPlaybackException;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.text.CaptionStyleCompat;
-import com.google.android.exoplayer.text.SubtitleView;
+import com.google.android.exoplayer.text.SubtitleLayout;
+import com.google.android.exoplayer.text.Cue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -129,7 +130,7 @@ public class RichTvInputService extends TvInputService {
         private TvContentRating mLastBlockedRating;
         private TvContentRating mCurrentContentRating;
         private String mSelectedSubtitleTrackId;
-        private SubtitleView mSubtitleView;
+        private SubtitleLayout mSubtitleView;
         private boolean mEpgSyncRequested;
         private final Set<TvContentRating> mUnblockedRatingSet = new HashSet<>();
         private final Handler mHandler;
@@ -181,14 +182,15 @@ public class RichTvInputService extends TvInputService {
             }
 
             @Override
-            public void onText(String text) {
+            public void onCues(List<Cue> cues) {
                 if (mSubtitleView != null) {
-                    if (TextUtils.isEmpty(text)) {
-                        mSubtitleView.setVisibility(View.INVISIBLE);
-                    } else {
-                        mSubtitleView.setVisibility(View.VISIBLE);
-                        mSubtitleView.setText(text);
-                    }
+                    mSubtitleView.setCues(cues);
+                    // if (TextUtils.isEmpty(text)) {
+                    //     mSubtitleView.setVisibility(View.INVISIBLE);
+                    // } else {
+                    //     mSubtitleView.setVisibility(View.VISIBLE);
+                    //     mSubtitleView.setCues(cues);
+                    // }
                 }
             }
         };
@@ -229,7 +231,7 @@ public class RichTvInputService extends TvInputService {
         public View onCreateOverlayView() {
             LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
             View view = inflater.inflate(R.layout.overlayview, null);
-            mSubtitleView = (SubtitleView) view.findViewById(R.id.subtitles);
+            mSubtitleView = (SubtitleLayout) view.findViewById(R.id.subtitles);
 
             // Configure the subtitle view.
             CaptionStyleCompat captionStyle;
@@ -238,7 +240,7 @@ public class RichTvInputService extends TvInputService {
                     mCaptioningManager.getUserStyle());
             captionTextSize *= mCaptioningManager.getFontScale();
             mSubtitleView.setStyle(captionStyle);
-            mSubtitleView.setTextSize(captionTextSize);
+            mSubtitleView.setFixedTextSize(0, captionTextSize);
             return view;
         }
 
@@ -275,9 +277,9 @@ public class RichTvInputService extends TvInputService {
 
             long nowMs = System.currentTimeMillis();
             int seekPosMs = (int) (nowMs - info.getStartTimeUtcMillis());
-            if (seekPosMs > 0) {
-                mPlayer.seekTo(seekPosMs);
-            }
+            // if (seekPosMs > 0) {
+            //     mPlayer.seekTo(seekPosMs);
+            // }
             mPlayer.setPlayWhenReady(true);
 
             checkContentBlockNeeded();
@@ -288,6 +290,7 @@ public class RichTvInputService extends TvInputService {
 
         @Override
         public boolean onTune(Uri channelUri) {
+            Log.d(TAG, "TUNE " + channelUri);
             if (mSubtitleView != null) {
                 mSubtitleView.setVisibility(View.INVISIBLE);
             }

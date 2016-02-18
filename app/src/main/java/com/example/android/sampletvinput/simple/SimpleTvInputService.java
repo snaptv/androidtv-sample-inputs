@@ -153,6 +153,8 @@ public class SimpleTvInputService extends TvInputService {
             try {
                 mPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(),
                         afd.getDeclaredLength());
+                // mPlayer.setDataSource("http://10.0.0.5/media/mp4/movies/gambit/movie.eng.mp4");
+                // mPlayer.setDataSource("udp://@239.255.1.11:1234");
                 mPlayer.prepare();
                 mPlayer.start();
             } catch (IOException e) {

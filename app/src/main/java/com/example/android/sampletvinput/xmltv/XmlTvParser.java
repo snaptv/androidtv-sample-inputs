@@ -106,6 +106,7 @@ public class XmlTvParser {
     private static final String VALUE_VIDEO_TYPE_HTTP_PROGRESSIVE = "HTTP_PROGRESSIVE";
     private static final String VALUE_VIDEO_TYPE_HLS = "HLS";
     private static final String VALUE_VIDEO_TYPE_MPEG_DASH = "MPEG_DASH";
+    private static final String VALUE_VIDEO_TYPE_MPEGTV_MCAST = "MPEGTS_MCAST";
 
     private static final String ANDROID_TV_RATING = "com.android.tv";
 
@@ -229,6 +230,8 @@ public class XmlTvParser {
                     videoType = TvInputPlayer.SOURCE_TYPE_HLS;
                 } else if (VALUE_VIDEO_TYPE_MPEG_DASH.equals(value)) {
                     videoType = TvInputPlayer.SOURCE_TYPE_MPEG_DASH;
+                } else if (VALUE_VIDEO_TYPE_MPEGTV_MCAST.equals(value)) {
+                    videoType = TvInputPlayer.SOURCE_TYPE_MPEGTS_MCAST;
                 }
             }
         }
